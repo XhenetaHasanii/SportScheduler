@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-
-const RegistrationForm = () => {
+const LoginForm = () => {
     const [formData, setFormData] = useState({
         username: '',
-        email: '',
         password: '',
     });
 
@@ -16,35 +14,23 @@ const RegistrationForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response= await axios.post('http://localhost:8080/api/auth/register', formData);
-;
-            alert('Registration successful!');
-            console.log(response.data);
+            const response = await axios.post('http://localhost:8080/api/auth/login', formData);
+            alert('Login successful!');
+            console.log('Token:', response.data);
         } catch (error) {
-            console.error('Error during registration', error);
-            alert('Registration failed. Please try again.');
+            console.error('Error during login', error);
+            alert('Login failed. Please check your credentials.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <div>
-                <label>First Name:</label>
+                <label>Username:</label>
                 <input
                     type="text"
                     name="username"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-
-            <div>
-                <label>Email:</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    value={formData.username}
                     onChange={handleChange}
                     required
                 />
@@ -59,10 +45,9 @@ const RegistrationForm = () => {
                     required
                 />
             </div>
-            <button type="submit">Register</button>
+            <button type="submit">Login</button>
         </form>
     );
 };
 
-export default RegistrationForm;
-
+export default LoginForm;
