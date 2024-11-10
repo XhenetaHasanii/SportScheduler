@@ -1,5 +1,5 @@
 package com.example.SportScheduler.service;
-import com.example.SportScheduler.model.JwtUtil;
+import com.example.SportScheduler.util.JwtUtil;
 import com.example.SportScheduler.model.User;
 import com.example.SportScheduler.repository.UserRepository;
 import org.springframework.security.authentication.BadCredentialsException;

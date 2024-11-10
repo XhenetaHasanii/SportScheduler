@@ -1,20 +1,21 @@
-package com.example.SportScheduler.model;
+package com.example.SportScheduler.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "fXJ3nN2yZkVzR3s4KdYhC5WqX0TpH9P7G45636573657657482956U49";
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // Signing with your secret key
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)  // Signing with your secret key
                 .compact();
     }
 
@@ -32,7 +33,7 @@ public class JwtUtil {
     // Extract all claims from the token
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -59,6 +60,3 @@ public class JwtUtil {
         T resolve(Claims claims);
     }
 }
-
-
-
