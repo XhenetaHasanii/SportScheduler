@@ -12,12 +12,17 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    private String secretKey = "yourSecretKey"; // Use a secure secret key
+
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .signWith(SignatureAlgorithm.HS256, jwtSecret)  // Signing with your secret key
+                .setIssuedAt(new Date()) // Token issued time
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // Set expiration (e.g., 10 hours)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
     }
+
 
     // Extract username from the token
     public String extractUsername(String token) {
@@ -31,11 +36,15 @@ public class JwtUtil {
     }
 
     // Extract all claims from the token
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+    public Claims extractAllClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JWT Token", e);
+        }
     }
 
     // Validate the token
@@ -45,18 +54,28 @@ public class JwtUtil {
     }
 
     // Check if the token has expired
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public boolean isTokenExpired(String token) {
+        Date expiration = extractExpiration(token);
+        return expiration != null && expiration.before(new Date());
     }
 
-    // Extract expiration date from the token
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
+    public Date extractExpiration(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getExpiration();  // Make sure the expiration field is present.
+        } catch (Exception e) {
+            return null;  // Ensure you're handling invalid tokens gracefully.
+        }}
 
     // Functional interface for extracting claims
     @FunctionalInterface
     public interface ClaimsResolver<T> {
         T resolve(Claims claims);
     }
-}
+
+    }
+
+

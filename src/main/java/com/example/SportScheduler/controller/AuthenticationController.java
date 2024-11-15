@@ -2,6 +2,7 @@ package com.example.SportScheduler.controller;
 import com.example.SportScheduler.model.User;
 import com.example.SportScheduler.service.AuthenticationService;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,6 +22,9 @@ public class AuthenticationController {
     public String login(@RequestBody User loginUser){
         return authenticationService.login(loginUser);
     }
-
-
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getAllUsers")
+    public List<User> getUsers(){
+        return authenticationService.getAllUsers();
+}
 }

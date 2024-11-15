@@ -15,8 +15,11 @@ const LoginForm = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', formData);
+           const authToken=response.data;
+           const setToken=localStorage.getItem('AuthToken',authToken)
+
             alert('Login successful!');
-            console.log('Token:', response.data);
+        
         } catch (error) {
             console.error('Error during login', error);
             alert('Login failed. Please check your credentials.');
@@ -50,4 +53,5 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default LoginForm; 
+

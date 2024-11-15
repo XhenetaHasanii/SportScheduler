@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import java.util.List;
 
 @Service
 public class AuthenticationService
@@ -40,7 +41,11 @@ public class AuthenticationService
         }
 
         // Generate and return the JWT token if the credentials are valid
-        return jwtUtil.generateToken(user.getUsername());
+         return jwtUtil.generateToken(user.getUsername());
+
+    }
+    public List<User> getAllUsers(){
+        return (List<User>) userRepository.findAll();
     }
 
 
